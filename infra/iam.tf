@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "fn_logs" {
   policy   = data.aws_iam_policy_document.fn_logs[each.key].json
 }
 
-# HealthScribe data access role: read audio/, write healthscribe/ only.
+# HealthScribe data access role: read audio/, write job output only.
 data "aws_iam_policy_document" "scribe_assume" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -78,10 +78,24 @@ data "aws_iam_policy_document" "scribe_data_access" {
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.media.arn}/audio/*"]
   }
+  # StartMedicalScribeJob has no output key parameter: output is written to
+  # <bucket>/<job name>/{transcript,summary}.json (verified). All job names
+  # start with the project name, so this prefix is the only writable one.
+  # Before starting, Transcribe verifies write access by writing this fixed
+  # object at the bucket root; the job fails with BadRequestException otherwise.
   statement {
-    sid       = "WriteOutput"
+    sid     = "WriteOutput"
+    actions = ["s3:PutObject"]
+    resources = [
+      "${aws_s3_bucket.media.arn}/${local.name}-*",
+      "${aws_s3_bucket.media.arn}/.write_access_check_file.temp",
+    ]
+  }
+  statement {
+    sid       = "NeverOverwriteAudio"
+    effect    = "Deny"
     actions   = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.media.arn}/healthscribe/*"]
+    resources = ["${aws_s3_bucket.media.arn}/audio/*"]
   }
   statement {
     sid       = "ListOwnPrefixes"
@@ -90,7 +104,7 @@ data "aws_iam_policy_document" "scribe_data_access" {
     condition {
       test     = "StringLike"
       variable = "s3:prefix"
-      values   = ["audio/*", "healthscribe/*"]
+      values   = ["audio/*", "${local.name}-*"]
     }
   }
 }

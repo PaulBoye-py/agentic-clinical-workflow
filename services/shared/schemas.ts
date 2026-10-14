@@ -51,6 +51,39 @@ export const toolInvocation = <T extends z.ZodType>(input: T) =>
 
 // ---- API bodies ----
 
+// Audio types HealthScribe accepts. Lossless is recommended.
+export const AUDIO_CONTENT_TYPES = {
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/flac": "flac",
+  "audio/mpeg": "mp3",
+  "audio/mp4": "m4a",
+  "audio/ogg": "ogg",
+  "audio/webm": "webm",
+} as const;
+
+export const createEncounterBody = z.strictObject({
+  patientId: patientIdSchema,
+  contentType: z.enum(Object.keys(AUDIO_CONTENT_TYPES) as [keyof typeof AUDIO_CONTENT_TYPES]),
+  // STEREO_CLINICIAN_LEFT: channel 0 clinician, channel 1 patient (exact roles).
+  // MONO: HealthScribe speaker diarization with 2 speakers.
+  audioLayout: z.enum(["STEREO_CLINICIAN_LEFT", "MONO"]),
+});
+
+export const reviewedNoteBody = z.strictObject({
+  reviewedNote: z.strictObject({
+    sections: z
+      .array(
+        z.strictObject({
+          name: z.string().trim().min(1).max(80),
+          text: z.string().trim().max(4000),
+        }),
+      )
+      .min(1)
+      .max(20),
+  }),
+});
+
 export const rejectBody = z
   .strictObject({ reason: text(1000).optional() })
   .optional();

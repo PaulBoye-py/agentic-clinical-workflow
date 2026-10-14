@@ -1,0 +1,26 @@
+# SYNTHETIC consultation. PT-001 (Ada Testcase, synthetic), Dr A.
+# Scenario A: must NOT mention allergies or current medications.
+# voices: DOCTOR=Matthew PATIENT=Danielle
+DOCTOR: Good morning, Ada. Have a seat. What brings you in today?
+PATIENT: Hi. I've had pain at the back of my mouth, on the lower right side, for about a week now.
+DOCTOR: I'm sorry to hear that. Can you show me exactly where?
+PATIENT: Right at the back, behind my last tooth on the bottom right.
+DOCTOR: How would you describe the pain? Is it there all the time, or does it come and go?
+PATIENT: It's a dull ache most of the time, but it gets really sharp when I chew on that side.
+DOCTOR: Have you noticed any swelling?
+PATIENT: Yes. The gum behind the last tooth feels swollen, and it's tender when I touch it with my tongue.
+DOCTOR: Any bad taste, any difficulty opening your mouth, or any fever?
+PATIENT: A slightly bad taste sometimes. I can open my mouth fine, and no fever.
+DOCTOR: Has anything like this happened before?
+PATIENT: Maybe once, about a year ago, but it settled on its own after a few days.
+DOCTOR: And generally, how is your health? Any medical conditions we should know about?
+PATIENT: I'm healthy. I had asthma as a child, but it went away years ago.
+DOCTOR: Good. Let me have a look. Open wide for me. The lower right wisdom tooth is partially erupted. The gum flap over it is red and inflamed, and it's tender when I press on it. I can't see any pus, and the tooth in front of it looks healthy.
+PATIENT: Is that what's causing the pain?
+DOCTOR: Yes. This looks like the gum flap over your wisdom tooth getting inflamed. I've also looked at the panoramic X-ray we took last month. It shows the lower right wisdom tooth is impacted. It's tilted forward against the tooth in front, so it can't come through properly.
+PATIENT: So will this keep happening?
+DOCTOR: It's likely to, because food and bacteria get trapped under that flap. So my plan is to refer you to the oral surgery team, for an assessment for removal of the lower right wisdom tooth. They'll talk you through the options.
+PATIENT: Okay. That makes sense.
+DOCTOR: In the meantime, keep the area really clean. Rinse with warm salt water a few times a day, especially after meals, and brush gently around that back tooth. If the swelling spreads, you get a fever, or you find it hard to open your mouth or swallow, call us straight away.
+PATIENT: I will. Thank you.
+DOCTOR: You're welcome. We'll send the referral, and the surgery team will contact you.

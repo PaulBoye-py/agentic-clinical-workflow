@@ -6,12 +6,16 @@
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:aws:phase2": "tsx scripts/test-phase2.ts"
+    "test:aws:phase2": "tsx scripts/test-phase2.ts",
+    "test:aws:phase3": "tsx scripts/test-phase3.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.1151.0",
     "@aws-sdk/client-lambda": "3.1151.0",
+    "@aws-sdk/client-s3": "3.1151.0",
+    "@aws-sdk/client-transcribe": "3.1151.0",
     "@aws-sdk/lib-dynamodb": "3.1151.0",
+    "@aws-sdk/s3-request-presigner": "3.1151.0",
     "zod": "4.6.7"
   },
   "devDependencies": {

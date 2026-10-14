@@ -55,9 +55,69 @@ data "aws_iam_policy_document" "approve_action" {
 
 data "aws_iam_policy_document" "api" {
   statement {
-    sid       = "ListAssignedPatients"
-    actions   = ["dynamodb:Scan"]
+    sid       = "ReadPatients"
+    actions   = ["dynamodb:Scan", "dynamodb:GetItem"]
     resources = [aws_dynamodb_table.patients.arn]
+  }
+  statement {
+    sid       = "Encounters"
+    actions   = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem"]
+    resources = [aws_dynamodb_table.encounters.arn]
+  }
+  statement {
+    sid     = "ReadTimelineAndActions"
+    actions = ["dynamodb:Query"]
+    resources = [
+      aws_dynamodb_table.encounter_steps.arn,
+      "${aws_dynamodb_table.actions.arn}/index/byEncounter",
+    ]
+  }
+  statement {
+    sid       = "WriteAudit"
+    actions   = ["dynamodb:PutItem"]
+    resources = [aws_dynamodb_table.audit.arn]
+  }
+  # Presigned upload URLs are signed with this role, so it needs PutObject on
+  # audio/. GetObject on audio/ is for HeadObject (upload check).
+  statement {
+    sid       = "Audio"
+    actions   = ["s3:PutObject", "s3:GetObject"]
+    resources = ["${aws_s3_bucket.media.arn}/audio/*"]
+  }
+  # Without ListBucket, HeadObject on a missing key returns 403 instead of 404.
+  statement {
+    sid       = "ListAudio"
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.media.arn]
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+      values   = ["audio/*"]
+    }
+  }
+  statement {
+    sid       = "ReadScribeOutput"
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.media.arn}/${local.name}-*"]
+  }
+  statement {
+    sid = "HealthScribeJobs"
+    actions = [
+      "transcribe:StartMedicalScribeJob",
+      "transcribe:GetMedicalScribeJob",
+      "transcribe:TagResource",
+    ]
+    resources = ["arn:${local.partition}:transcribe:${var.region}:${local.account_id}:medical-scribe-job/${local.name}-*"]
+  }
+  statement {
+    sid       = "PassScribeRole"
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.scribe_data_access.arn]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values   = ["transcribe.amazonaws.com"]
+    }
   }
 }
 

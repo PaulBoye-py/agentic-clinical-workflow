@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { apiFetch, type PatientSummary } from "@/lib/api";
@@ -66,13 +67,12 @@ export default function PatientsPage() {
                   )}
                 </p>
               </div>
-              <button
-                disabled
-                title="Consultations arrive in the next build step"
-                className="rounded-md bg-teal-700 px-4 py-2 font-medium text-white opacity-50"
+              <Link
+                href={`/encounter/?patient=${encodeURIComponent(p.patientId)}`}
+                className="rounded-md bg-teal-700 px-4 py-2 font-medium text-white hover:bg-teal-800"
               >
                 New consultation
-              </button>
+              </Link>
             </li>
           ))}
         </ul>

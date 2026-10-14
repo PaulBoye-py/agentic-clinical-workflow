@@ -1,0 +1,19 @@
+# SYNTHETIC consultation. PT-002 (Ben Placeholder, synthetic), Dr A.
+# Scenario B: routine check-up, small filling, review in 6 months. Covers
+# history, allergies and medications so the completeness check passes.
+# voices: DOCTOR=Matthew PATIENT=Stephen
+DOCTOR: Hi Ben, good to see you again. It's been about six months. How have things been?
+PATIENT: All good, thanks. No problems really.
+DOCTOR: Any pain, bleeding gums, or sensitivity?
+PATIENT: Maybe a little sensitivity to cold on the upper left now and then. Nothing major.
+DOCTOR: Okay, we'll check that. Any changes to your general health since last time? Any new medical conditions, any medications, or any allergies?
+PATIENT: No. Still healthy, I'm not taking any medications, and no allergies.
+DOCTOR: Great. Let me have a look. Gums look healthy, with just a little plaque on the lower front teeth and no swelling. The upper left first molar has a small cavity between the teeth, which matches what we saw on your bitewing X-rays in April. That's probably the cold sensitivity. Everything else looks sound.
+PATIENT: Does it need a filling?
+DOCTOR: Yes, but it's small, so we can do it today. It's shallow, so you won't need numbing.
+PATIENT: Okay, let's do it.
+DOCTOR: All done. That's a small tooth-coloured filling on the upper left first molar. You might feel some mild sensitivity for a day or two, which is normal.
+PATIENT: That was quick.
+DOCTOR: Keep brushing twice a day with a fluoride toothpaste, and clean between your teeth once a day, especially at the back. No other concerns today. We'll see you again for a routine check-up in six months.
+PATIENT: Sounds good. Thanks.
+DOCTOR: Take care, Ben.

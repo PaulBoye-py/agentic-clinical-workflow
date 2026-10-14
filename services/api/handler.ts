@@ -4,14 +4,18 @@ import { ddb } from "../shared/ddb";
 import { errors } from "../shared/errors";
 import { callerFrom, handleApi, json, type ApiEvent, type ApiResult, type Caller } from "../shared/http";
 import type { Patient } from "../shared/types";
+import { createEncounter, getEncounterRoute, saveReviewedNote, startTranscription } from "./encounters";
 
 const FN = "api";
 
 type Route = (event: ApiEvent, caller: Caller) => Promise<ApiResult>;
 
-// Encounter routes are added in Phase 3.
 const routes: Record<string, Route> = {
   "GET /patients": listPatients,
+  "POST /encounters": createEncounter,
+  "GET /encounters/{encounterId}": getEncounterRoute,
+  "POST /encounters/{encounterId}/transcribe": startTranscription,
+  "PUT /encounters/{encounterId}/note": saveReviewedNote,
 };
 
 export async function handler(event: ApiEvent): Promise<ApiResult> {

@@ -47,6 +47,21 @@ export interface Encounter {
   scribe?: { template?: string; jobDurationMs?: number };
   transcribeStartedAt?: string;
   error?: { code: string; message: string };
+  pendingQuestion?: { question: string; missingItems: string[] } | null;
+  agentSummary?: string;
+  agentModel?: string;
+}
+
+export interface AuditEvent {
+  sk: string;
+  ts: string;
+  event: string;
+  actor: string;
+  doctorId?: string;
+  patientId?: string;
+  actionId?: string;
+  toolName?: string;
+  reason?: string;
 }
 
 export interface EncounterStep {

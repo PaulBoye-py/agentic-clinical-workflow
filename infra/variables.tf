@@ -28,6 +28,12 @@ variable "bedrock_fallback_model_id" {
   default     = "us.amazon.nova-pro-v1:0"
 }
 
+variable "use_fallback_model" {
+  description = "Use the fallback model. Manual switch only; never automatic."
+  type        = bool
+  default     = false
+}
+
 variable "note_template" {
   description = "HealthScribe NoteTemplate (HISTORY_AND_PHYSICAL or PHYSICAL_SOAP)."
   type        = string

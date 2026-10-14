@@ -73,9 +73,19 @@ data "aws_iam_policy_document" "api" {
     ]
   }
   statement {
-    sid       = "WriteAudit"
-    actions   = ["dynamodb:PutItem"]
+    sid       = "Audit"
+    actions   = ["dynamodb:PutItem", "dynamodb:Query"]
     resources = [aws_dynamodb_table.audit.arn]
+  }
+  statement {
+    sid       = "WriteTimeline"
+    actions   = ["dynamodb:PutItem"]
+    resources = [aws_dynamodb_table.encounter_steps.arn]
+  }
+  statement {
+    sid       = "StartAgentWorker"
+    actions   = ["lambda:InvokeFunction"]
+    resources = [aws_lambda_function.fn["agent-worker"].arn]
   }
   # Presigned upload URLs are signed with this role, so it needs PutObject on
   # audio/. GetObject on audio/ is for HeadObject (upload check).
@@ -128,6 +138,7 @@ locals {
     tool-get-patient-record = data.aws_iam_policy_document.tool_get_patient_record.json
     tool-create-referral    = data.aws_iam_policy_document.tool_propose_action.json
     tool-schedule-recall    = data.aws_iam_policy_document.tool_propose_action.json
+    agent-worker            = data.aws_iam_policy_document.agent_worker.json
   }
 }
 

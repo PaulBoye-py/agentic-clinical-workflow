@@ -30,12 +30,14 @@ export const createReferralInput = z.strictObject({
   relevantFindings: z.array(text(500)).max(20),
   allergies: z.array(text(200)).max(20),
   imagingReference: text(300).nullable(),
-  urgency: z.enum(["ROUTINE", "SOON", "URGENT"]),
+  urgency: z
+    .enum(["ROUTINE", "SOON", "URGENT", "NOT_STATED"])
+    .describe("Urgency exactly as stated in the note's plan. NOT_STATED if the plan does not state one."),
 });
 
 export const scheduleRecallInput = z.strictObject({
   patientId: patientIdSchema,
-  intervalMonths: z.number().int().min(1).max(24),
+  intervalMonths: z.number().int().min(1).max(24).describe("Recall interval stated in the note's plan."),
   reason: text(1000),
 });
 
@@ -68,6 +70,10 @@ export const createEncounterBody = z.strictObject({
   // STEREO_CLINICIAN_LEFT: channel 0 clinician, channel 1 patient (exact roles).
   // MONO: HealthScribe speaker diarization with 2 speakers.
   audioLayout: z.enum(["STEREO_CLINICIAN_LEFT", "MONO"]),
+});
+
+export const agentReplyBody = z.strictObject({
+  answer: z.string().trim().min(1).max(2000),
 });
 
 export const reviewedNoteBody = z.strictObject({

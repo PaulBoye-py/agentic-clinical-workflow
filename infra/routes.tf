@@ -1,13 +1,16 @@
 # Every route requires the Cognito JWT authorizer.
 locals {
   routes = {
-    "GET /patients"                             = "api"
-    "POST /encounters"                          = "api"
-    "GET /encounters/{encounterId}"             = "api"
-    "POST /encounters/{encounterId}/transcribe" = "api"
-    "PUT /encounters/{encounterId}/note"        = "api"
-    "POST /actions/{actionId}/approve"          = "approve-action"
-    "POST /actions/{actionId}/reject"           = "approve-action"
+    "GET /patients"                              = "api"
+    "POST /encounters"                           = "api"
+    "GET /encounters/{encounterId}"              = "api"
+    "POST /encounters/{encounterId}/transcribe"  = "api"
+    "PUT /encounters/{encounterId}/note"         = "api"
+    "POST /encounters/{encounterId}/agent/run"   = "api"
+    "POST /encounters/{encounterId}/agent/reply" = "api"
+    "GET /encounters/{encounterId}/audit"        = "api"
+    "POST /actions/{actionId}/approve"           = "approve-action"
+    "POST /actions/{actionId}/reject"            = "approve-action"
   }
   route_targets = toset(values(local.routes))
 }

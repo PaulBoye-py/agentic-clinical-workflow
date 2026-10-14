@@ -37,7 +37,15 @@ function encounterIdFrom(event: ApiEvent): string {
 
 // Internal bookkeeping stays server-side.
 function view(encounter: Encounter) {
-  const { nextStepSeq: _a, lastScribeCheckAt: _b, conversation: _c, pendingToolUseId: _d, ...rest } = encounter as Encounter & Record<string, unknown>;
+  const {
+    nextStepSeq: _a,
+    lastScribeCheckAt: _b,
+    conversation: _c,
+    pendingToolUseId: _d,
+    pendingToolResults: _e,
+    pendingAnswer: _f,
+    ...rest
+  } = encounter as Encounter & Record<string, unknown>;
   return rest;
 }
 

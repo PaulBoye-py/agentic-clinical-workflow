@@ -134,7 +134,7 @@ export function ReviewPanel({ transcript, draftNote, reviewed, readOnly, busy, o
               disabled={busy}
               className="rounded-md bg-teal-700 px-4 py-2 font-medium text-white hover:bg-teal-800 disabled:opacity-50"
             >
-              {busy ? "Saving…" : "Approve note"}
+              {busy ? "Starting…" : "Approve note & run assistant"}
             </button>
           </div>
         )}

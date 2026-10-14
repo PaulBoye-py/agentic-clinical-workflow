@@ -4,6 +4,7 @@ import { ddb } from "../shared/ddb";
 import { errors } from "../shared/errors";
 import { callerFrom, handleApi, json, type ApiEvent, type ApiResult, type Caller } from "../shared/http";
 import type { Patient } from "../shared/types";
+import { getAudit, replyToAgent, runAgent } from "./agent";
 import { createEncounter, getEncounterRoute, saveReviewedNote, startTranscription } from "./encounters";
 
 const FN = "api";
@@ -16,6 +17,9 @@ const routes: Record<string, Route> = {
   "GET /encounters/{encounterId}": getEncounterRoute,
   "POST /encounters/{encounterId}/transcribe": startTranscription,
   "PUT /encounters/{encounterId}/note": saveReviewedNote,
+  "POST /encounters/{encounterId}/agent/run": runAgent,
+  "POST /encounters/{encounterId}/agent/reply": replyToAgent,
+  "GET /encounters/{encounterId}/audit": getAudit,
 };
 
 export async function handler(event: ApiEvent): Promise<ApiResult> {

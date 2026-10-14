@@ -3,8 +3,9 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
-import type { EncounterStatus, EncounterView, ReviewedSection } from "@/lib/types";
+import type { EncounterStatus, ReviewedSection } from "@/lib/types";
 import { useAuth } from "../auth-provider";
+import { AgentPanel } from "./agent-panel";
 import { NewConsultation } from "./new-consultation";
 import { ReviewPanel } from "./review-panel";
 import { useEncounter } from "./use-encounter";
@@ -16,6 +17,8 @@ export default function EncounterPage() {
     </Suspense>
   );
 }
+
+const AGENT_STATUSES: EncounterStatus[] = ["AGENT_RUNNING", "NEEDS_INPUT", "AWAITING_APPROVAL", "COMPLETED", "REJECTED"];
 
 const STATUS_LABEL: Record<EncounterStatus, string> = {
   CREATED: "Awaiting audio",
@@ -59,20 +62,21 @@ function EncounterScreen() {
 }
 
 function ExistingEncounter({ encounterId, justUploaded }: { encounterId: string; justUploaded: boolean }) {
-  const { data, error, setData } = useEncounter(encounterId);
+  const { data, error, refresh } = useEncounter(encounterId);
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  async function run(fn: () => Promise<Partial<EncounterView>>) {
+  // Every action is followed by a reload, which also restarts polling.
+  async function run(fn: () => Promise<unknown>) {
     setBusy(true);
     setActionError(null);
     try {
-      const res = await fn();
-      if (res.encounter && data) setData({ ...data, ...res, encounter: res.encounter });
+      await fn();
     } catch (err) {
       setActionError(err instanceof Error ? err.message : "Request failed.");
     } finally {
       setBusy(false);
+      refresh();
     }
   }
 
@@ -86,10 +90,18 @@ function ExistingEncounter({ encounterId, justUploaded }: { encounterId: string;
   if (!data) return <p className="text-slate-500">Loading encounter…</p>;
 
   const enc = data.encounter;
-  const startTranscription = () =>
-    run(() => apiFetch<Partial<EncounterView>>(`/encounters/${enc.encounterId}/transcribe`, { method: "POST" }));
-  const approveNote = (sections: ReviewedSection[]) =>
-    run(() => apiFetch<Partial<EncounterView>>(`/encounters/${enc.encounterId}/note`, { method: "PUT", body: { reviewedNote: { sections } } }));
+  const startTranscription = () => run(() => apiFetch(`/encounters/${enc.encounterId}/transcribe`, { method: "POST" }));
+  const runAssistant = () => apiFetch(`/encounters/${enc.encounterId}/agent/run`, { method: "POST" });
+  const approveNoteAndRun = (sections: ReviewedSection[]) =>
+    run(async () => {
+      await apiFetch(`/encounters/${enc.encounterId}/note`, { method: "PUT", body: { reviewedNote: { sections } } });
+      await runAssistant();
+    });
+  const reply = (answer: string) =>
+    run(() => apiFetch(`/encounters/${enc.encounterId}/agent/reply`, { method: "POST", body: { answer } }));
+  const decide = (actionId: string, decision: "approve" | "reject", reason?: string) =>
+    run(() => apiFetch(`/actions/${actionId}/${decision}`, { method: "POST", body: decision === "reject" && reason ? { reason } : undefined }));
+  const agentStarted = AGENT_STATUSES.includes(enc.status) || data.steps.length > 0;
 
   return (
     <div className="space-y-6">
@@ -146,15 +158,26 @@ function ExistingEncounter({ encounterId, justUploaded }: { encounterId: string;
             reviewed={enc.reviewedNote?.sections}
             readOnly={enc.status !== "NOTE_READY"}
             busy={busy}
-            onApprove={(sections) => void approveNote(sections)}
+            onApprove={(sections) => void approveNoteAndRun(sections)}
           />
         </div>
       )}
 
       {enc.status === "NOTE_REVIEWED" && (
-        <div className="rounded-xl border border-teal-200 bg-teal-50 px-5 py-4 text-teal-900">
-          Note approved by you. The assistant step (Amazon Bedrock) is added in the next build phase.
+        <div className="flex items-center justify-between gap-4 rounded-xl border border-teal-200 bg-teal-50 px-5 py-4 text-teal-900">
+          <span>Note approved by you.</span>
+          <button
+            onClick={() => void run(runAssistant)}
+            disabled={busy}
+            className="rounded-md bg-teal-700 px-4 py-2 font-medium text-white hover:bg-teal-800 disabled:opacity-50"
+          >
+            Run assistant
+          </button>
         </div>
+      )}
+
+      {agentStarted && (
+        <AgentPanel encounter={enc} steps={data.steps} actions={data.actions} busy={busy} onReply={(a) => void reply(a)} onDecide={(id, d, r) => void decide(id, d, r)} />
       )}
     </div>
   );

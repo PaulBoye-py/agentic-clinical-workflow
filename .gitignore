@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# terraform (local state on purpose)
+/infra/.terraform/
+/infra/terraform.tfstate*
+/infra/*.tfplan
+/infra/*.auto.tfvars
+/infra/terraform.tfvars
+
+# lambda bundles
+/services/dist/
+/services/node_modules/

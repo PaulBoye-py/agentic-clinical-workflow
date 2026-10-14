@@ -1,0 +1,27 @@
+{
+  "name": "clinical-agent-demo-services",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:aws:phase2": "tsx scripts/test-phase2.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.1151.0",
+    "@aws-sdk/client-lambda": "3.1151.0",
+    "@aws-sdk/lib-dynamodb": "3.1151.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "3.1151.0",
+    "@aws-sdk/client-iam": "3.1151.0",
+    "@types/aws-lambda": "8.10.164",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.4"
+  }
+}

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Backend and infra have their own toolchains.
+    "services/**",
+    "infra/**",
+    "scripts/**",
   ]),
 ]);
 

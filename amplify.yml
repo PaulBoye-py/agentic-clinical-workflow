@@ -1,0 +1,19 @@
+# Amplify Hosting: static export of the Next.js app at the repo root.
+# services/, infra/ and scripts/ are not part of this build.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: out
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

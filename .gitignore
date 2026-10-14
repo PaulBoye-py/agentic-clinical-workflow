@@ -50,3 +50,5 @@ next-env.d.ts
 # lambda bundles
 /services/dist/
 /services/node_modules/
+/infra/.build/
+!.env.example

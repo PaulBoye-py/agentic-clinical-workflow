@@ -13,7 +13,10 @@ variable "region" {
 variable "frontend_origins" {
   description = "Origins allowed by API Gateway and S3 CORS (localhost + the Amplify domain)."
   type        = list(string)
-  default     = ["http://localhost:3000"]
+  default = [
+    "http://localhost:3000",
+    "https://main.d22idrwhnjspaf.amplifyapp.com", # Amplify Hosting (created manually)
+  ]
 }
 
 # Chosen by measurement (services/scripts/run-scenario.ts + eval-model.ts):

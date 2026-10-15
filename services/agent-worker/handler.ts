@@ -40,6 +40,12 @@ const TOOL_FUNCTIONS: Partial<Record<ToolName, () => string>> = {
   schedule_recall: () => env.required("TOOL_FN_SCHEDULE_RECALL"),
 };
 
+// Model-default sampling for every model (some reject non-default values).
+// The token limit leaves room for models that reason before answering.
+function inferenceConfig(): { maxTokens: number } {
+  return { maxTokens: 4000 };
+}
+
 // The fallback model is used only when explicitly switched on. Never automatically.
 function activeModel(): string {
   return process.env.USE_FALLBACK_MODEL === "true" ? env.required("BEDROCK_FALLBACK_MODEL_ID") : env.required("BEDROCK_MODEL_ID");
@@ -132,7 +138,7 @@ async function runLoop(encounter: Enc, messages: Message[], model: string, conte
         system: [{ text: systemPrompt }],
         messages,
         toolConfig: { tools: toolSpecs },
-        inferenceConfig: { maxTokens: 1500, temperature: 0 },
+        inferenceConfig: inferenceConfig(),
       }),
       { abortSignal: AbortSignal.timeout(MODEL_CALL_TIMEOUT_MS) },
     );

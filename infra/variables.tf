@@ -16,10 +16,15 @@ variable "frontend_origins" {
   default     = ["http://localhost:3000"]
 }
 
+# Chosen by measurement (services/scripts/run-scenario.ts + eval-model.ts):
+# OpenAI gpt-oss-120b on Bedrock passed A-E 3/3 full runs. Claude Haiku 4.5
+# declined scenario C's record request; Claude 5.5 / GPT-5.x+ are blocked on
+# this account by a 0 tokens-per-minute quota. Accepts an inference profile ID
+# (us./global.) or a plain foundation-model ID; IAM follows automatically.
 variable "bedrock_model_id" {
-  description = "Primary agent model (cross-Region inference profile ID)."
+  description = "Primary agent model: a Bedrock inference profile ID or foundation-model ID."
   type        = string
-  default     = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+  default     = "openai.gpt-oss-120b-1:0"
 }
 
 variable "bedrock_fallback_model_id" {
